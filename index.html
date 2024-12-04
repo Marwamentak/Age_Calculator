@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Age Calculator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+  <div class="container">
+
+    <div class="calculator">
+      <h1>JavaScript <br> <span>Age Calculator</span></h1>
+
+      <div class="input-box">
+        <input type="date" id="date">
+        <button onclick="calculateAge()">Calculate</button>
+      </div>
+      <p id="result"></p>
+    </div>
+
+  </div>
+
+
+  <script>
+        // Récupère l'élément HTML avec l'ID "date" (un champ de saisie de type "date")
+    let userInput = document.getElementById("date");
+
+    // Cette ligne de code définit la date maximale qu'un utilisateur peut entrer dans le champ "date".
+    // `new Date()` crée un objet Date correspondant à la date actuelle.
+    // `toISOString()` convertit cette date en une chaîne au format ISO 8601 ("YYYY-MM-DDTHH:mm:ss.sssZ").
+    // `.split("T")` divise cette chaîne en un tableau ["YYYY-MM-DD", "HH:mm:ss.sssZ"] en utilisant "T" comme séparateur.
+    // `[0]` extrait uniquement la partie "YYYY-MM-DD" (la date sans l'heure).
+    // On assigne cette valeur à `userInput.max`, ce qui limite la sélection à aujourd'hui ou à une date antérieure.
+    userInput.max = new Date().toISOString().split("T")[0];
+
+    // Récupère l'élément HTML avec l'ID "result" où le résultat sera affiché
+    let result = document.getElementById("result");
+
+    // Fonction qui calcule l'âge de l'utilisateur en années, mois et jours
+    function calculateAge() {
+      // Récupère la date entrée par l'utilisateur et la convertit en objet Date
+      let birtheDate = new Date(userInput.value);
+
+      // Récupère le jour, le mois (attention : les mois commencent à 0, donc on ajoute 1) et l'année de la date de naissance
+      let d1 = birtheDate.getDate();
+      let m1 = birtheDate.getMonth() + 1;
+      let y1 = birtheDate.getFullYear();
+
+      // Crée un nouvel objet Date pour obtenir la date actuelle (aujourd'hui)
+      let today = new Date();
+
+      // Récupère le jour, le mois (idem, on ajoute 1) et l'année d'aujourd'hui
+      let d2 = today.getDate();
+      let m2 = today.getMonth() + 1;
+      let y2 = today.getFullYear();
+
+      // Déclare des variables pour stocker l'âge calculé en années, mois et jours
+      let d3, m3, y3;
+
+      // Calcul de la différence en années entre aujourd'hui et la date de naissance
+      y3 = y2 - y1;
+
+      // Calcul du nombre de mois
+      if (m2 >= m1) {
+        // Si le mois actuel est supérieur ou égal au mois de naissance, on soustrait simplement les deux
+        m3 = m2 - m1;
+      } else {
+        // Sinon, on décrémente l'année de 1 et on ajuste le nombre de mois
+        y3--;
+        m3 = 12 + m2 - m1;
+      }
+
+      // Calcul du nombre de jours
+      if (d2 >= d1) {
+        // Si le jour actuel est supérieur ou égal au jour de naissance, on soustrait simplement les deux
+        d3 = d2 - d1;
+      } else {
+        // Sinon, on décrémente le mois de 1 et on ajuste le nombre de jours
+        m3--;
+        // On utilise une fonction auxiliaire pour obtenir le nombre de jours dans le mois de naissance
+        d3 = getDaysInMonth(y1, m1) + d2 - d1;
+      }
+
+      // Si après ajustement, le nombre de mois est négatif, on ajuste à 11 mois et on décrémente l'année de 1
+      if (m3 < 0) {
+        m3 = 11;
+        y3--;
+      }
+
+      // Affiche le résultat dans l'élément HTML "result" sous la forme :
+      // "You are X years, Y months and Z days old"
+      result.innerHTML = `You are <span>${y3}</span> years, <span>${m3}</span> months and <span>${d3}</span> days old`;
+    }
+
+    // Fonction auxiliaire pour obtenir le nombre de jours dans un mois donné d'une année donnée
+    function getDaysInMonth(year, month) {
+      // Crée une date au premier jour du mois suivant, puis retourne le dernier jour du mois actuel
+      return new Date(year, month, 0).getDate();
+    }
+
+
+
+
+  </script>
+
+
+</body>
+</html>
